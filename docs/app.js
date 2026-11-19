@@ -16,6 +16,8 @@
     cols: document.getElementById('colsInput'),
     summary: document.getElementById('layoutSummary'),
     cheatBadge: document.getElementById('cheatBadge'),
+    pwBtn: document.getElementById('pwBtn'),
+    pwInput: document.getElementById('pwInput'),
     toast: document.getElementById('toast'),
     hint: document.getElementById('hint'),
     warn: document.getElementById('warn'),
@@ -517,6 +519,40 @@
     els.shuffle.addEventListener('click', shuffleSeats);
     els.reset.addEventListener('click', resetSeats);
     els.cheatBadge.addEventListener('click', () => setCheat(false));
+
+    els.pwBtn.addEventListener('click', () => {
+      const willShow = els.pwInput.hasAttribute('hidden');
+      if (willShow) els.pwInput.removeAttribute('hidden');
+      else els.pwInput.setAttribute('hidden', '');
+      if (willShow) {
+        els.pwInput.value = '';
+        els.pwInput.focus();
+      }
+    });
+    els.pwInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        if (els.pwInput.value.trim().toUpperCase() === 'KIMURA') {
+          setCheat(true);
+          els.pwInput.value = '';
+          els.pwInput.setAttribute('hidden', '');
+        } else {
+          toast('パスワードが違います');
+          els.pwInput.value = '';
+          els.pwInput.focus();
+        }
+      } else if (event.key === 'Escape') {
+        event.preventDefault();
+        els.pwInput.value = '';
+        els.pwInput.setAttribute('hidden', '');
+        els.pwBtn.focus();
+      }
+    });
+    els.pwInput.addEventListener('blur', () => {
+      window.setTimeout(() => {
+        if (document.activeElement !== els.pwInput) els.pwInput.setAttribute('hidden', '');
+      }, 120);
+    });
 
     els.settingsToggle.addEventListener('click', () => {
       const willShow = els.settings.hasAttribute('hidden');
